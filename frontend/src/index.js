@@ -38,6 +38,8 @@ function App() {
   const [data, setData] = useState([]);
   const [keyword, setKeyWord] = useState();
   const [dropdown, setDropdown] = useState();
+  const [directMessageFilterEnabled, setDirectMessageFilterEnabled] = useState(false);
+  const [businessRequestFilterEnabled, setBusinessRequestFilterEnabled] = useState(false);
 
   // This function handles the search request when user hits "Submit"
   async function submitClicked(e) {
@@ -92,7 +94,18 @@ function App() {
     setData(apiResponse.data);
   }
 
+  // This function filters the data according to the specifications set by the user
+  function dataFilter(item) {
+    if (directMessageFilterEnabled && !item.isAvailableForDirectMessage) {
+      return false;
+    } else if (businessRequestFilterEnabled && !item.isAvailableForBusinessRequests) {
+      return false;
+    }
+    return true;
+  }
+
   const searchBoxStyle = { width: "20rem", background: "#F2F1F9", borderRadius: "5px", border: "none", padding: "1rem", marginLeft: "1.5rem", marginRight: "1.5rem", marginTop: "3rem" };
+  const checkboxStyle = { margin: ".5rem" };
   return (
     <div id="app">
       <img src={logo} alt="logo" />
@@ -111,6 +124,12 @@ function App() {
         <Button onClick={submitClicked}>
           Submit
         </Button>
+        <div>
+          <input type="checkbox" style={checkboxStyle} onChange={(e) => setDirectMessageFilterEnabled(e.target.checked)} />
+          <label>Can direct message</label>
+          <input type="checkbox" style={checkboxStyle} onChange={(e) => setBusinessRequestFilterEnabled(e.target.checked)} />
+          <label>Can send business request</label>
+        </div>
       </form>
       <Table>
         <Table.Header>
@@ -129,7 +148,7 @@ function App() {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {data.map(item => <Table.Row key={item._id}>
+          {data.filter(dataFilter).map(item => <Table.Row key={item._id}>
             <Table.Cell>
               <Image src={item.avatarUrl} />
             </Table.Cell>
