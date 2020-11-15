@@ -55,6 +55,43 @@ function App() {
     setData(apiResponse.data);
   }
 
+  // The functions below send requests to the server to sort the data
+  async function sortByPriceClicked(e) {
+    e.preventDefault();
+    const apiResponse = await axios.get(config.API_URL + '/search', {
+      params: {
+        keyword: keyword,
+        dropdown: dropdown,
+        sortBy: "price"
+      }
+    });
+    setData(apiResponse.data);
+  }
+
+  async function sortByScoreClicked(e) {
+    e.preventDefault();
+    const apiResponse = await axios.get(config.API_URL + '/search', {
+      params: {
+        keyword: keyword,
+        dropdown: dropdown,
+        sortBy: "score"
+      }
+    });
+    setData(apiResponse.data);
+  }
+
+  async function sortByActivityClicked(e) {
+    e.preventDefault();
+    const apiResponse = await axios.get(config.API_URL + '/search', {
+      params: {
+        keyword: keyword,
+        dropdown: dropdown,
+        sortBy: "activity"
+      }
+    });
+    setData(apiResponse.data);
+  }
+
   const searchBoxStyle = { width: "20rem", background: "#F2F1F9", borderRadius: "5px", border: "none", padding: "1rem", marginLeft: "1.5rem", marginRight: "1.5rem", marginTop: "3rem" };
   return (
     <div id="app">
@@ -84,11 +121,11 @@ function App() {
             <Table.HeaderCell>Id</Table.HeaderCell>
             <Table.HeaderCell>Username</Table.HeaderCell>
             <Table.HeaderCell>Bio</Table.HeaderCell>
-            <Table.HeaderCell>Last Active<Icon size="small" name="angle down" /></Table.HeaderCell>
-            <Table.HeaderCell>Score<Icon size="small" name="angle down" /></Table.HeaderCell>
+            <Table.HeaderCell onClick={sortByActivityClicked}>Last Active<Icon size="small" name="angle down" /></Table.HeaderCell>
+            <Table.HeaderCell onClick={sortByScoreClicked}>Score<Icon size="small" name="angle down" /></Table.HeaderCell>
             <Table.HeaderCell>Direct Message</Table.HeaderCell>
             <Table.HeaderCell>Business Requests</Table.HeaderCell>
-            <Table.HeaderCell>Price<Icon size="small" name="angle down" /></Table.HeaderCell>
+            <Table.HeaderCell onClick={sortByPriceClicked}>Price<Icon size="small" name="angle down" /></Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
