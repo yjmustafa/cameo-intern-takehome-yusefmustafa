@@ -39,6 +39,22 @@ function App() {
   const [keyword, setKeyWord] = useState();
   const [dropdown, setDropdown] = useState();
 
+  // This function handles the search request when user hits "Submit"
+  async function searchClicked(e) {
+    e.preventDefault();
+    if (dropdown == null) {
+      alert('Choose a search category.');
+      return;
+    }
+    const apiResponse = await axios.get(config.API_URL + '/search', {
+      params: {
+        keyword: keyword,
+        dropdown: dropdown
+      }
+    });
+    setData(apiResponse.data);
+  }
+
   const searchBoxStyle = { width: "20rem", background: "#F2F1F9", borderRadius: "5px", border: "none", padding: "1rem", marginLeft: "1.5rem", marginRight: "1.5rem", marginTop: "3rem" };
   return (
     <div id="app">
@@ -55,7 +71,7 @@ function App() {
           placeholder="Search for Cameo talent"
           onChange={(e) => setKeyWord(e.target.value)}
         />
-        <Button>
+        <Button onClick={searchClicked}>
           Submit
         </Button>
       </form>

@@ -11,22 +11,30 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
-/**
- * This is an Express route handler
- * https://expressjs.com/
-*/
-app.get('/', (req, res) => {
-  res.send('This is some data from the server. Please read README.md for full instructions before beginning.');
-});
-
 /**
 * Implement a new endpoint HTTP GET /search that accepts a query, and returns a filtered list of talent based on that query.
 * A user should be able to search by username, name, or category.
 * Note: A list of Cameo talent is provided in TALENT_DATA.json
 */
 app.get('/search', (req, res) => {
-  res.send('Return your search results here');
+  const keyword = req.query.keyword;
+  const dropdown = req.query.dropdown;
+
+  var filteredData;
+  if (dropdown === "username") {
+    filteredData = talentData.filter(function (item) {
+      return item.username.toLowerCase().includes(keyword.toLowerCase());
+    })
+  } else if (dropdown === "name") {
+    filteredData = talentData.filter(function (item) {
+      return item.name.toLowerCase().includes(keyword.toLowerCase());
+    })
+  } else if (dropdown === "category") {
+    filteredData = talentData.filter(function (item) {
+      return item.category.toLowerCase().includes(keyword.toLowerCase());
+    })
+  }
+  res.send(filteredData);
 });
 
 app.listen(PORT);
