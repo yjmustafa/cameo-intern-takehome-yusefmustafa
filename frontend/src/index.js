@@ -40,6 +40,8 @@ function App() {
   const [dropdown, setDropdown] = useState();
   const [directMessageFilterEnabled, setDirectMessageFilterEnabled] = useState(false);
   const [businessRequestFilterEnabled, setBusinessRequestFilterEnabled] = useState(false);
+  const [minPrice, setMinPrice] = useState(-1);
+  const [maxPrice, setMaxPrice] = useState(-1);
 
   // This function handles the search request when user hits "Submit"
   async function submitClicked(e) {
@@ -94,18 +96,42 @@ function App() {
     setData(apiResponse.data);
   }
 
+  // The functions below set the state of the min and max prices
+  function handleMinValue(e) {
+    e.preventDefault();
+    if (e.target.value !== "") {
+      setMinPrice(e.target.value);
+    } else {
+      setMinPrice(-1);
+    }
+  }
+
+  function handleMaxValue(e) {
+    e.preventDefault();
+    if (e.target.value !== "") {
+      setMaxPrice(e.target.value);
+    } else {
+      setMaxPrice(-1);
+    }
+  }
+
   // This function filters the data according to the specifications set by the user
   function dataFilter(item) {
     if (directMessageFilterEnabled && !item.isAvailableForDirectMessage) {
       return false;
     } else if (businessRequestFilterEnabled && !item.isAvailableForBusinessRequests) {
       return false;
+    } else if (minPrice !== -1 && item.price < minPrice) {
+      return false;
+    } else if (maxPrice !== -1 && item.price > maxPrice) {
+      return false;
     }
     return true;
   }
 
   const searchBoxStyle = { width: "20rem", background: "#F2F1F9", borderRadius: "5px", border: "none", padding: "1rem", marginLeft: "1.5rem", marginRight: "1.5rem", marginTop: "3rem" };
-  const checkboxStyle = { margin: ".5rem" };
+  const checkBoxStyle = { margin: ".5rem" };
+  const priceBoxStyle = { width: "10rem", background: "#F2F1F9", borderRadius: "5px", border: "none", padding: ".5rem", marginRight: "1rem", marginTop: ".5rem" };
   return (
     <div id="app">
       <img src={logo} alt="logo" />
@@ -125,10 +151,24 @@ function App() {
           Submit
         </Button>
         <div>
-          <input type="checkbox" style={checkboxStyle} onChange={(e) => setDirectMessageFilterEnabled(e.target.checked)} />
+          <input type="checkbox" style={checkBoxStyle} onChange={(e) => setDirectMessageFilterEnabled(e.target.checked)} />
           <label>Can direct message</label>
-          <input type="checkbox" style={checkboxStyle} onChange={(e) => setBusinessRequestFilterEnabled(e.target.checked)} />
+          <input type="checkbox" style={checkBoxStyle} onChange={(e) => setBusinessRequestFilterEnabled(e.target.checked)} />
           <label>Can send business request</label>
+        </div>
+        <div>
+          <input
+            style={priceBoxStyle}
+            type="text"
+            placeholder="Min price"
+            onChange={handleMinValue}
+          />
+          <input
+            style={priceBoxStyle}
+            type="text"
+            placeholder="Max price"
+            onChange={handleMaxValue}
+          />
         </div>
       </form>
       <Table>
